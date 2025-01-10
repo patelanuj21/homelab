@@ -1,0 +1,163 @@
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  bufferingSize: 100
+
+http:
+ #region routers 
+  routers:
+    proxmox:
+      entryPoints:
+        - "https"
+      rule: "Host(`pve.us.local.anujpatel.net`)||Host(`pve.anujpatel.net`)"
+      middlewares:
+        - default-headers
+        - https-redirect
+      tls: {}
+      service: proxmox
+    proxmox-mini:
+      entryPoints:
+        - "https"
+      rule: "Host(`mini.us.local.anujpatel.net`)"
+      middlewares:
+        - default-headers
+        - https-redirect
+      tls: {}
+      service: proxmox-mini
+    pihole:
+      entryPoints:
+        - "https"
+      rule: "Host(`pihole.us.local.anujpatel.net`)"
+      middlewares:
+        - default-headers
+        - addprefix-pihole
+        - https-redirect
+      tls: {}
+      service: pihole
+    truenas-test:
+      entryPoints:
+        - "https"
+      rule: "Host(`truenas-test.us.local.anujpatel.net`)"
+      middlewares:
+        - default-headers
+        - https-redirect
+      tls: {}
+      service: truenas-test
+    truenas:
+      entryPoints:
+        - "https"
+      rule: "Host(`truenas.us.local.anujpatel.net`)"
+      middlewares:
+        - default-headers
+        - https-redirect
+      tls: {}
+      service: truenas
+    pihole2:
+      entryPoints:
+        - "https"
+      rule: "Host(`pihole2.us.local.anujpatel.net`)"
+      middlewares:
+        - default-headers
+        - addprefix-pihole
+        - https-redirect
+      tls: {}
+      service: pihole2
+    homeassistant:
+      entryPoints:
+        - "https"
+      rule: "Host(`home.us.local.anujpatel.net`)||Host(`home.anujpatel.net`)"
+      middlewares:
+        - default-headers
+        - https-redirect
+      tls: {}
+      service: homeassistant
+    share:
+      entryPoints:
+        - "https"
+      rule: "Host(`share.local.progressivue.com`)||Host(`share.progressivue.com`)"
+      middlewares:
+        - default-headers
+        - https-redirect
+      tls: {}
+      service: share
+
+
+#endregion
+#region services
+  services:
+    proxmox:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.10.203:8006"
+        passHostHeader: true
+    proxmox-mini:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.10.51:8006"
+        passHostHeader: true
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.10.31:80"
+        passHostHeader: true
+    pihole2:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.10.30:80"
+        passHostHeader: true
+    truenas-test:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.10.208"
+        passHostHeader: true
+    truenas:
+      loadBalancer:
+        servers:
+          - url: "https://192.168.10.37"
+        passHostHeader: true
+    homeassistant:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.10.28:8123"
+        passHostHeader: true
+    share:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.10.202"
+        passHostHeader: true
+
+#endregion
+  middlewares:
+    addprefix-pihole:
+      addPrefix:
+        prefix: "/admin"
+    https-redirect:
+      redirectScheme:
+        scheme: https
+
+    default-headers:
+      headers:
+        frameDeny: true
+        sslRedirect: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    default-whitelist:
+      ipWhiteList:
+        sourceRange:
+        - "10.0.0.0/8"
+        - "192.168.0.0/16"
+        - "172.16.0.0/12"
+
+    secured:
+      chain:
+        middlewares:
+        - default-whitelist
+        - default-headers
+
