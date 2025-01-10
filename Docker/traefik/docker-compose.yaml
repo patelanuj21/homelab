@@ -20,7 +20,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${TRAEFIK_YAML_PATH}:/traefik.yml:ro
-      - ${TRAEFIK_ACME_PATH}:/acme.json
+      - type: bind
+        source: ${TRAEFIK_ACME_PATH}
+        target: acme.json
+        bind:
+          create_host_path: true
+          mode: "0600"
       # - {TRAEFIK_CONFIG_PATH}:/config.yml:ro
     labels:
       - "traefik.enable=true"
