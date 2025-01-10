@@ -22,8 +22,7 @@ services:
       - ${TRAEFIK_YAML_PATH}:/traefik.yml:ro
       - ${TRAEFIK_ACME_PATH}:/acme.json
       # - {TRAEFIK_CONFIG_PATH}:/config.yml:ro
-      - ./entrypoint.sh:/entrypoint.sh
-    entrypoint: ["/entrypoint.sh"]
+    command: ["sh", "-c", "chmod 600 /acme.json && traefik"]
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=http"
