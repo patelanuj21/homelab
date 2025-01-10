@@ -20,13 +20,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${TRAEFIK_YAML_PATH}:/traefik.yml:ro
-      - type: bind
-        source: ${TRAEFIK_ACME_PATH}
-        target: acme.json
-        bind:
-          create_host_path: true
-          mode: "0600"
+      - ${TRAEFIK_ACME_PATH}:/acme.json
       # - {TRAEFIK_CONFIG_PATH}:/config.yml:ro
+      - ./entrypoint.sh:/entrypoint.sh
+    entrypoint: ["/entrypoint.sh"]
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=http"
