@@ -13,7 +13,7 @@ services:
       - 80:80
       - 443:443
     environment:
-      CF_DNS_API_TOKEN: ${CF_API_KEY} # if using .env
+      CF_API_KEY: ${CF_API_KEY} # if using .env
       CF_API_EMAIL: ${CF_API_EMAIL}
       TRAEFIK_DASHBOARD_CREDENTIALS: ${TRAEFIK_DASHBOARD_CREDENTIALS}
     # env_file: .env # use .env
