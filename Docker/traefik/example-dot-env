@@ -7,6 +7,6 @@ TRAEFIK_CONFIG_PATH=
 
 TRAEFIK_DASHBOARD_CREDENTIALS=
 
-TRAEFIK_URL=
-DOMAIN=
-DOMAIN_SAN=
+TRAEFIK_URL= #without http(s)
+DOMAIN= #Example - <host>.<site>.<domain>.com
+DOMAIN_SAN= #Example - *.<host>.<site>.<domain>.com
